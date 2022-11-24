@@ -10,6 +10,9 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def gameStatus(board):
+    """
+    Returns status of the game. If computer loses, returns -1. If computer wins, returns 1. Else returns 0
+    """
     winningFormations = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
     for formation in winningFormations:
@@ -23,6 +26,9 @@ def gameStatus(board):
     return 0
 
 def printBoard(board, reverse=False):
+    """
+    Print the board to the console. If player playing O (second) then pass reverse = True
+    """
     print('\n')
     for i in range(3):
         print('| ',end='')
@@ -46,6 +52,9 @@ def printBoard(board, reverse=False):
     print('\n')
 
 def computerMakeMove(board):
+    """
+    Checks minimax of all next possible moves and chooses the max possible score. 
+    """
     max = -1
     position = 0
     positionChanged = False
@@ -74,7 +83,7 @@ def computerMakeMove(board):
     
 def makeMove(board, player, position):
     """
-    Checks if given position is occupied, if not it will set that position as -1 or 1, if it is occupied, it will return False
+    Checks if given position is occupied, if not it will set that position as -1 or 1, if it is occupied, it will return False, otherwise it returns the updated board
     """
     if(board[position] == 0):
         boardCopy = board.copy()
@@ -83,44 +92,11 @@ def makeMove(board, player, position):
     else:
         return False
 
-# def minimax(board: list, currentPlayer: int):
-    # """
-    # \nReturns score of given board
-    # \ncurrentPlayer: 1 = Computer, -1 = User
-    # """
-    # if(0 not in board or gameStatus(board) != 0):
-    #     # print(gameStatus(board))
-    #     # printBoard(board)
-    #     return gameStatus(board)
-
-    # if(currentPlayer == -1):
-    #     score = 1
-    # else:
-    #     score = -1
-    
-    # for i in range(9):
-    #     if(board[i] == 0):
-    #         if(currentPlayer == -1):
-    #             minimax_score = minimax(makeMove(board, -1, i), currentPlayer*-1)
-    #             if(minimax_score < score):
-    #                 score = minimax_score
-    #         else:
-    #             minimax_score = minimax(makeMove(board, 1, i), currentPlayer*-1)
-    #             if(minimax_score > score):
-    #                 score = minimax_score
-    #     else:
-    #         continue
-
-    # return score
-
 def minimax(board: list, currentPlayer: int):
     """
-    \nReturns score of given board
-    \ncurrentPlayer: 1 = Computer, -1 = User
+    \nRecursive function which calls minimax on given board if board is not full or no three-in-a-rows
     """
     if(0 not in board or gameStatus(board) != 0):
-        # print(gameStatus(board))
-        # printBoard(board)
         return gameStatus(board)
 
     scores = []
@@ -135,14 +111,11 @@ def minimax(board: list, currentPlayer: int):
                 scores.append(minimax_score)
         else:
             continue
-    # print('currentPlayer ', str(currentPlayer))
-    # print(scores)
-    # printBoard(board)
+
     if(currentPlayer == -1):
         return min(scores)
     else:
         return max(scores)
-
 
 if __name__ == "__main__":
     board = [0,0,0,0,0,0,0,0,0]
@@ -194,5 +167,5 @@ if __name__ == "__main__":
         else:
             print(bcolors.BOLD+'Congratulations! You have won!'+bcolors.ENDC)
     elif(0 not in board):
-        print('Draw!')
+        print(bcolors.BOLD+'Draw!'+bcolors.ENDC)
         
