@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from random import randint
-
-from index import computerMakeMove  
+import game
+from bcolors import bcolors
+import time
 
 LARGEFONT =("Comic Sans MS", 35)
   
@@ -146,17 +147,16 @@ class Page1(tk.Frame):
   
 
 class Page2(tk.Frame):
-        player_character = ''
-        ai_character = ''
-        positions = ['-','-','-','-','-','-','-','-','-']
+        board = [0,0,0,0,0,0,0,0,0]
         game_over = False 
+        userX = True #defines if user chose X or O
         turn = 1
         turns = 0
 
         def __init__(self, parent, controller):
             tk.Frame.__init__(self, parent)
             self.config(background="pink")
-        
+
             
 
             tk.Grid.rowconfigure(self, 2, weight=1)
@@ -166,174 +166,165 @@ class Page2(tk.Frame):
             tk.Grid.columnconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 1, weight=1)
             tk.Grid.columnconfigure(self, 2, weight=1)
-
-            def computer_turn():
-                global turn
-                global turns 
-                global positions
-                global ai_character
-                
-                
-                while turn == 0 and turns < 9:
-                    #ai_select = computerMakeMove(positions)
-                    ai_select = randint(0,8)
-                    print(turn,ai_select,positions[ai_select])
-                    if positions[ai_select] == '-':
-                        positions[ai_select] = ai_character
-                        if 0 <= ai_select <= 2:
-                            r = 5 
-                        elif 3 <= ai_select <= 5:
-                            r = 6
-                        else:
-                            r = 7
-                        if ai_select == 0 or ai_select == 3 or ai_select == 6:
-                            c = 0
-                        elif ai_select == 1 or ai_select == 4 or ai_select == 7:
-                            c = 1
-                        else :
-                            c = 2
-                        new_button = tk.Button(self, text=positions[ai_select],font=('Comic Sans MS',15,'bold')).grid(row=r,column=c,sticky='nesw')
-                        game_over = check_game_over(positions)
-                        turn = 1
-                        turns +=1
-                
-
-            def check_game_over(pos):
-                global game_over
-                if pos[0] + pos[1] + pos[2] == 'XXX' or\
-                    pos[3] + pos[4] + pos[5] == 'XXX' or\
-                    pos[6] + pos[7] + pos[8] == 'XXX' or\
-                    pos[0] + pos[3] + pos[6] == 'XXX' or\
-                    pos[1] + pos[4] + pos[7] == 'XXX' or\
-                    pos[2] + pos[5] + pos[8] == 'XXX' or\
-                    pos[0] + pos[4] + pos[8] == 'XXX' or\
-                    pos[2] + pos[4] + pos[6] == 'XXX' :
-                    game_over =True
-                    win_label = tk.Label(self,text='X wins',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
-                elif pos[0] + pos[1] + pos[2] == 'OOO' or\
-                    pos[3] + pos[4] + pos[5] == 'OOO' or\
-                    pos[6] + pos[7] + pos[8] == 'OOO' or\
-                    pos[0] + pos[3] + pos[6] == 'OOO' or\
-                    pos[1] + pos[4] + pos[7] == 'OOO' or\
-                    pos[2] + pos[5] + pos[8] == 'OOO' or\
-                    pos[0] + pos[4] + pos[8] == 'OOO' or\
-                    pos[2] + pos[4] + pos[6] == 'OOO' :
-                    game_over =True
-                    win_label = tk.Label(self,text='O wins',font=('Comic Sans MS',15,'bold',),bg='pink').grid(row =8,column=1)
-                else:
-                    if game_over == False and turns == 9:
-                        win_label = tk.Label(self,text='Its a draw',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
-
-                return game_over
-
-
-            def x_select():
-                global player_character
-                global ai_character
-                player_character = 'X'
-                ai_character = 'O'
-                player_label = tk.Label(self, text='You have selected ' + player_character,
-                                        font=('Comic Sans MS',10),
-                                        bg='pink')
-                player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
-                start_button = tk.Button(self,text='START',
-                                        command=draw_board,
-                                        font=('Comic Sans MS',10,'bold'),
-                                        bg='#D9C21D',
-                                        relief=tk.RAISED)
-                start_button.grid(row=4,column=1,sticky='nesw')
-            def o_select():
-                global player_character
-                global ai_character
-                player_character = 'O'
-                ai_character = 'X'
-                player_label = tk.Label(self, text='You have selected ' + player_character,
-                                        font=('Comic Sans MS',10),
-                                        bg='pink')
-                player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
-                start_button = tk.Button(self,text='START',
-                                        command=draw_board,
-                                        bg='#D9C21D',
-                                        relief=tk.RAISED,
-                                        font=('Comic Sans MS',10,'bold'))
-                start_button.grid(row=4,column=1,sticky='nesw')
-
-            def player_position(position) :
-                global turn
-                global turns
-                global positions
-                global game_over
-
-                if 0 <= position <= 2:
-                    r = 5 
-                elif 3 <= position <= 5:
-                    r = 6
-                else:
-                    r = 7
-                if position == 0 or position == 3 or position == 6:
-                    c = 0
-                elif position == 1 or position == 4 or position == 7:
-                    c = 1
-                else :
-                    c = 2
-                
-                if turn == 1 and turns < 9 and game_over == False:
-                    if positions[position] == '-':
-                        positions[position] =player_character
-                        new_button = tk.Button(self, text=positions[position],font=('Comic Sans MS',15,'bold')).grid(row=r,column=c,sticky='nesw')
-                        game_over = check_game_over(positions)
-                        turn = 0
-                        turns +=1
-                        print(turn)
-                        print(turns)
-                        computer_turn()
-
-
-            def draw_board():
-                global positions
-                global turn
-                global turns
-                global game_over
-                turn = 1
-                turns = 0
-                game_over = False
-                positions = ['-','-','-','-','-','-','-','-','-']
-                t_l =tk.Button(self, text=positions[0], command= lambda: player_position(0),bg='#62B371')
-                t_l.grid(row=5, column=0,sticky='nesw')
-                t_m =tk.Button(self, text=positions[0], command= lambda: player_position(1),bg='#62B371')
-                t_m.grid(row=5, column=1,sticky='nesw')
-                t_r =tk.Button(self, text=positions[0], command= lambda: player_position(2),bg='#62B371')
-                t_r.grid(row=5, column=2,sticky='nesw')
-                m_l =tk.Button(self, text=positions[0], command= lambda: player_position(3),bg='#62B371')
-                m_l.grid(row=6, column=0,sticky='nesw')
-                m_m =tk.Button(self, text=positions[0], command= lambda: player_position(4),bg='#62B371')
-                m_m.grid(row=6, column=1,sticky='nesw')
-                m_r =tk.Button(self, text=positions[0], command= lambda: player_position(5),bg='#62B371')
-                m_r.grid(row=6, column=2,sticky='nesw')
-                b_l =tk.Button(self, text=positions[0], command= lambda: player_position(6),bg='#62B371')
-                b_l.grid(row=7, column=0,sticky='nesw')
-                b_m =tk.Button(self, text=positions[0], command= lambda: player_position(7),bg='#62B371')
-                b_m.grid(row=7, column=1,sticky='nesw')
-                b_r =tk.Button(self, text=positions[0], command= lambda: player_position(8),bg='#62B371')
-                b_r.grid(row=7, column=2,sticky='nesw')
-
             
             player_select_label = tk.Label(self, 
                                             text="Select the character you wish to play as :",
                                             font=('Comic Sans MS',15,'bold'),
                                             bg='pink')
             x_button = tk.Button(self,text='X', 
-                                command= x_select,
+                                command= self.x_select,
                                 font=('Comic Sans MS',10,'bold'),
                                 bg='#62B371')
             o_button = tk.Button(self,text='O', 
-                                command= o_select,
+                                command= self.o_select,
                                 font=('Comic Sans MS',10,'bold'),
                                 bg='#62B371')
 
             player_select_label.grid(row=1,column=0, columnspan=3, pady=(30, 0))
             x_button.grid(row=2,column=0, sticky='ew',padx=(40, 0))
             o_button.grid(row=2,column=2, sticky='ew',padx=(0, 40))
+            self.var = tk.IntVar()
+
+        def x_select(self):
+            global userX
+            player_character = 'X'
+            userX = True
+            player_label = tk.Label(self, text='You have selected ' + player_character,
+                                    font=('Comic Sans MS',10),
+                                    bg='pink')
+            player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
+            start_button = tk.Button(self,text='START',
+                                    command=self.draw_board,
+                                    font=('Comic Sans MS',10,'bold'),
+                                    bg='#D9C21D',
+                                    relief=tk.RAISED)
+            start_button.grid(row=4,column=1,sticky='nesw')
+        
+        def o_select(self):
+            global userX
+            player_character = 'O'
+            userX = False
+            player_label = tk.Label(self, text='You have selected ' + player_character,
+                                    font=('Comic Sans MS',10),
+                                    bg='pink')
+            player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
+            start_button = tk.Button(self,text='START',
+                                    command=self.draw_board,
+                                    bg='#D9C21D',
+                                    relief=tk.RAISED,
+                                    font=('Comic Sans MS',10,'bold'))
+            start_button.grid(row=4,column=1,sticky='nesw')
+
+        def draw_board(self):
+            global board
+            global turn
+            global turns
+            global game_over
+            turn = 1
+            turns = 0
+            game_over = False
+            board = [0,0,0,0,0,0,0,0,0]
+            self.t_l =tk.Button(self, text='', command= lambda: self.update_board(0),bg='#62B371')
+            self.t_l.grid(row=5, column=0,sticky='nesw')
+            self.t_m =tk.Button(self, text='', command= lambda: self.update_board(1),bg='#62B371')
+            self.t_m.grid(row=5, column=1,sticky='nesw')
+            self.t_r =tk.Button(self, text='', command= lambda: self.update_board(2),bg='#62B371')
+            self.t_r.grid(row=5, column=2,sticky='nesw')
+            self.m_l =tk.Button(self, text='', command= lambda: self.update_board(3),bg='#62B371')
+            self.m_l.grid(row=6, column=0,sticky='nesw')
+            self.m_m =tk.Button(self, text='', command= lambda: self.update_board(4),bg='#62B371')
+            self.m_m.grid(row=6, column=1,sticky='nesw')
+            self.m_r =tk.Button(self, text='', command= lambda: self.update_board(5),bg='#62B371')
+            self.m_r.grid(row=6, column=2,sticky='nesw')
+            self.b_l =tk.Button(self, text='', command= lambda: self.update_board(6),bg='#62B371')
+            self.b_l.grid(row=7, column=0,sticky='nesw')
+            self.b_m =tk.Button(self, text='', command= lambda: self.update_board(7),bg='#62B371')
+            self.b_m.grid(row=7, column=1,sticky='nesw')
+            self.b_r =tk.Button(self, text='', command= lambda: self.update_board(8),bg='#62B371')
+            self.b_r.grid(row=7, column=2,sticky='nesw')
+
+            self.buttons = [self.t_l, self.t_m, self.t_r, self.m_l, self.m_m, self.m_r, self.b_l, self.b_m, self.b_r,]
+
+            self.start_game()
+
+        def update_board(self, position = None):
+            global board
+            global userX
+
+            if(self.var.get() == 0):
+                self.var.set(1)
+            else:
+                self.var.set(0)
+
+            if(position != None and board[position] == 0):
+                board[position] = -1
+
+            for r in range(5,8):
+                for c in range(3):
+                    if(board[(r-5)*3+c] == 1):
+                        tk.Button(self, text='O' if userX else 'X',font=('Comic Sans MS',15,'bold')).grid(row=r,column=c,sticky='nesw')
+                    elif(board[(r-5)*3+c] == -1):
+                        tk.Button(self, text='X' if userX else 'O',font=('Comic Sans MS',15,'bold')).grid(row=r,column=c,sticky='nesw')
+
+
+        def start_game(self):
+            global board
+            global userX
+
+            reverse = not userX
+
+            if(not reverse):
+                print("You are X and the computer is O")
+            else:
+                print("You are O and the computer is X")
+
+            while(0 in board and game.gameStatus(board) == 0):
+                if(not reverse):
+                    self.buttons[0].wait_variable(self.var)
+                    game.printBoard(board, reverse)
+
+                    if(0 not in board or game.gameStatus(board)!=0):
+                        break
+
+                    print(bcolors.OKBLUE+'Computer thinking...'+bcolors.ENDC)
+                    for btn in self.buttons:
+                        btn['state'] = 'disabled'
+                    board = game.computerMakeMove(board)       
+                    for btn in self.buttons:
+                        btn['state'] = 'normal'
+                    self.update_board()
+                    game.printBoard(board, reverse)
+
+                else:
+                    print(bcolors.OKBLUE+'Computer thinking...'+bcolors.ENDC)
+                    for btn in self.buttons:
+                        btn['state'] = 'disabled'
+                    board = game.computerMakeMove(board)       
+                    for btn in self.buttons:
+                        btn['state'] = 'normal'
+                    self.update_board()
+                    game.printBoard(board, reverse)
+
+                    if(0 not in board or game.gameStatus(board)!=0):
+                        break
+
+                    self.buttons[0].wait_variable(self.var)
+                    game.printBoard(board, reverse)
+
+
+            
+            if(game.gameStatus(board) != 0):
+                if(game.gameStatus(board) == 1):
+                    print(bcolors.BOLD+'Computer has won. Better luck next time!'+bcolors.ENDC)
+                    tk.Label(self,text='Computer has won. Better luck next time!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
+                else:
+                    print(bcolors.BOLD+'Congratulations! You have won!'+bcolors.ENDC)
+                    tk.Label(self,text='Congratulations! You have won!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
+            elif(0 not in board):
+                print(bcolors.BOLD+'Draw!'+bcolors.ENDC)
+                tk.Label(self,text='Draw!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
+
+            # exit()
             
         
   
