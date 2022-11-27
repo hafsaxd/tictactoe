@@ -56,8 +56,8 @@ class StartPage(tk.Frame):
         self.config(background="pink")#change background color
 
         label = tk.Label(self, 
-                text="Welcome to \nTic-Tac-Toe ! ",
-                font=('Comic Sans MS',30,'bold'),
+                text="Welcome To \nThe Unbeatable \nTic-Tac-Toe ! ",
+                font=('Comic Sans MS',25,'bold'),
                 fg='blue', 
                 bg='#ADD8E6',
                 relief=tk.RAISED,
@@ -68,7 +68,7 @@ class StartPage(tk.Frame):
                 compound='bottom' )
         
         label.image = photo # keep a reference!
-        label.grid(column=0, row=0)
+        label.grid(column=0, row=0, pady=20)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
   
@@ -98,7 +98,11 @@ class Page1(tk.Frame):
             inp = inputtxt.get(1.0, "end-1c")
             lbl.config(text = "Hello there "+inp + 
                 "!\n How to play: \n\n 1)The game is played on a tic-tac-toe grid\n2)You must then select your character: X or O "
-                +"\n 3) The computer will be assigned the other character and take turns with you \n 4) The first player to get of their symbols in a row\n(accross,down or diagonal) is the winner!")
+                +"\n 3) The computer will be assigned the other character and take turns with you "
+                +"\n4) If you pick X , you will go first "
+                +"\n5) If you pick O, the computer will go first"
+                +"\n 6) The first player to get of their symbols in a row"
+                +"\n(accross,down or diagonal) is the winner!")
             button2 = ttk.Button(self, text ="PLAY!",
                                  command = lambda : controller.show_frame(Page2),
                                  )
@@ -189,8 +193,8 @@ class Page2(tk.Frame):
             global userX
             player_character = 'X'
             userX = True
-            player_label = tk.Label(self, text='You have selected ' + player_character,
-                                    font=('Comic Sans MS',10),
+            player_label = tk.Label(self, text='You have selected ' + player_character +'\n You will go first!',
+                                    font=('Comic Sans MS',10,'bold'),
                                     bg='pink')
             player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
             start_button = tk.Button(self,text='START',
@@ -204,8 +208,8 @@ class Page2(tk.Frame):
             global userX
             player_character = 'O'
             userX = False
-            player_label = tk.Label(self, text='You have selected ' + player_character,
-                                    font=('Comic Sans MS',10),
+            player_label = tk.Label(self, text='You have selected ' + player_character +'\n Computer will go first!',
+                                    font=('Comic Sans MS',10,'bold'),
                                     bg='pink')
             player_label.grid(row=3,column=0,sticky='nesw',columnspan=3)
             start_button = tk.Button(self,text='START',
@@ -224,28 +228,29 @@ class Page2(tk.Frame):
             turns = 0
             game_over = False
             board = [0,0,0,0,0,0,0,0,0]
-            self.t_l =tk.Button(self, text='', command= lambda: self.update_board(0),bg='#62B371')
+            self.t_l =tk.Button(self, text='', command= lambda: self.update_board(0),bg='#62B371',state='active')
             self.t_l.grid(row=5, column=0,sticky='nesw')
-            self.t_m =tk.Button(self, text='', command= lambda: self.update_board(1),bg='#62B371')
+            self.t_m =tk.Button(self, text='', command= lambda: self.update_board(1),bg='#62B371',state='active')
             self.t_m.grid(row=5, column=1,sticky='nesw')
-            self.t_r =tk.Button(self, text='', command= lambda: self.update_board(2),bg='#62B371')
+            self.t_r =tk.Button(self, text='', command= lambda: self.update_board(2),bg='#62B371',state='active')
             self.t_r.grid(row=5, column=2,sticky='nesw')
-            self.m_l =tk.Button(self, text='', command= lambda: self.update_board(3),bg='#62B371')
+            self.m_l =tk.Button(self, text='', command= lambda: self.update_board(3),bg='#62B371',state='active')
             self.m_l.grid(row=6, column=0,sticky='nesw')
-            self.m_m =tk.Button(self, text='', command= lambda: self.update_board(4),bg='#62B371')
+            self.m_m =tk.Button(self, text='', command= lambda: self.update_board(4),bg='#62B371',state='active')
             self.m_m.grid(row=6, column=1,sticky='nesw')
-            self.m_r =tk.Button(self, text='', command= lambda: self.update_board(5),bg='#62B371')
+            self.m_r =tk.Button(self, text='', command= lambda: self.update_board(5),bg='#62B371',state='active')
             self.m_r.grid(row=6, column=2,sticky='nesw')
-            self.b_l =tk.Button(self, text='', command= lambda: self.update_board(6),bg='#62B371')
+            self.b_l =tk.Button(self, text='', command= lambda: self.update_board(6),bg='#62B371',state='active')
             self.b_l.grid(row=7, column=0,sticky='nesw')
-            self.b_m =tk.Button(self, text='', command= lambda: self.update_board(7),bg='#62B371')
+            self.b_m =tk.Button(self, text='', command= lambda: self.update_board(7),bg='#62B371',state='active')
             self.b_m.grid(row=7, column=1,sticky='nesw')
-            self.b_r =tk.Button(self, text='', command= lambda: self.update_board(8),bg='#62B371')
+            self.b_r =tk.Button(self, text='', command= lambda: self.update_board(8),bg='#62B371',state='active')
             self.b_r.grid(row=7, column=2,sticky='nesw')
 
             self.buttons = [self.t_l, self.t_m, self.t_r, self.m_l, self.m_m, self.m_r, self.b_l, self.b_m, self.b_r,]
+            
+            self.start_game()       
 
-            self.start_game()
 
         def update_board(self, position = None):
             global board
@@ -270,6 +275,7 @@ class Page2(tk.Frame):
         def start_game(self):
             global board
             global userX
+            
 
             reverse = not userX
 
@@ -311,22 +317,66 @@ class Page2(tk.Frame):
                     self.buttons[0].wait_variable(self.var)
                     game.printBoard(board, reverse)
 
-
+            status = game.gameStatus(board) 
             
             if(game.gameStatus(board) != 0):
                 if(game.gameStatus(board) == 1):
                     print(bcolors.BOLD+'Computer has won. Better luck next time!'+bcolors.ENDC)
-                    tk.Label(self,text='Computer has won. Better luck next time!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
+                    self.open_popup()
+                    status = 0
                 else:
                     print(bcolors.BOLD+'Congratulations! You have won!'+bcolors.ENDC)
-                    tk.Label(self,text='Congratulations! You have won!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
+                    self.open_popup()
             elif(0 not in board):
                 print(bcolors.BOLD+'Draw!'+bcolors.ENDC)
-                tk.Label(self,text='Draw!',font=('Comic Sans MS',15,'bold'),bg='pink').grid(row =8,column=1)
-
+                self.open_popup()
             # exit()
-            
         
+  
+
+        def open_popup(self):
+            top= tk.Toplevel(self)
+            top.geometry("250x100")
+            top.config(background='yellow')
+            top.title("Result")
+
+            if(game.gameStatus(board) != 0):
+                if(game.gameStatus(board) == 1): 
+                    win = tk.Label(top,text='Computer has won.\n Better luck next time!',font=('Comic Sans MS',10,'bold'),bg='yellow')
+                    win.pack()
+                    restart = tk.Button(top,text='Restart', command= lambda : [top.destroy(),self.draw_board()],
+                                        font=('Comic Sans MS',10,'bold'),
+                                        fg="black",
+                                        bg="white",
+                                        activeforeground="green",
+                                        activebackground="black", )
+                    
+                    restart.pack(padx=50)
+                    #status = 0
+                else:
+                    win = tk.Label(self,text='Congratulations! You have won!',font=('Comic Sans MS',10,'bold'),bg='yellow').pack()
+                    restart = tk.Button(top,text='Restart', command= lambda : [top.destroy(),self.draw_board()] ,
+                                        font=('Comic Sans MS',10,'bold'),
+                                        fg="black",
+                                        bg="white",
+                                        activeforeground="green",
+                                        activebackground="black",)
+                    restart.pack()
+            elif(0 not in board):
+                    win = tk.Label(self,text='Draw!',font=('Comic Sans MS',10,'bold')).pack()
+                    restart = tk.Button(top,text='Restart', command= lambda : [top.destroy(),self.draw_board()] ,
+                                        font=('Comic Sans MS',10,'bold'),
+                                        fg="black",
+                                        bg="white",
+                                        activeforeground="green",
+                                        activebackground="black",)
+                    restart.pack()
+            # exit()
+        
+
+
+        
+
   
 # Driver Code
 root = tkinterApp()
